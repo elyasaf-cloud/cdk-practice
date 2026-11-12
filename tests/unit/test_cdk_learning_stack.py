@@ -1,15 +1,48 @@
-import aws_cdk as core
-import aws_cdk.assertions as assertions
+import aws_cdk as cdk
 
-from cdk_learning.cdk_learning_stack import CdkLearningStack
+from aws_cdk.assertions import Template
 
-# example tests. To run these tests, uncomment this file along with the example
-# resource in cdk_learning/cdk_learning_stack.py
-def test_sqs_queue_created():
-    app = core.App()
-    stack = CdkLearningStack(app, "cdk-learning")
-    template = assertions.Template.from_stack(stack)
+from cdk_learning.BucketStack import CdkLearningStack
 
-#     template.has_resource_properties("AWS::SQS::Queue", {
-#         "VisibilityTimeout": 300
-#     })
+
+def test_s3_bucket_created():
+
+    app = cdk.App()
+
+    stack = CdkLearningStack(
+        app,
+        "TestStack"
+    )
+
+    template = Template.from_stack(stack)
+
+    template.resource_count_is(
+        "AWS::S3::Bucket",
+        1
+    )
+
+def test_s3_bucket_properties():
+
+    app = cdk.App()
+
+    stack = CdkLearningStack(
+        app,
+        "TestStack"
+    )
+
+    template = Template.from_stack(stack)
+
+    template.has_resource_properties(
+        "AWS::S3::Bucket",
+        {
+            "VersioningConfiguration": {
+                "Status": "Enabled"
+            },
+            "PublicAccessBlockConfiguration": {
+                "BlockPublicAcls": True,
+                "BlockPublicPolicy": True,
+                "IgnorePublicAcls": True,
+                "RestrictPublicBuckets": True
+            }
+        }
+    )
