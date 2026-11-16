@@ -2,7 +2,7 @@ import aws_cdk as cdk
 
 from aws_cdk.assertions import Template
 
-from cdk_learning.BucketStack import CdkLearningStack
+from cdk_learning.bucket_stack import CdkLearningStack
 
 
 def test_s3_bucket_created():
