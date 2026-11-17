@@ -17,7 +17,7 @@ class NetworkStack(Stack):
             subnet_configuration=[
                 ec2.SubnetConfiguration(
                     name="PrivateSubnet1",
-                    subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS,
+                    subnet_type=ec2.SubnetType.PRIVATE_ISOLATED,
                     cidr_mask=24,
                 )
             ],

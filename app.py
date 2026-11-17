@@ -20,6 +20,6 @@ networkStack = NetworkStack(app, "NetworkStack", env=env, config=config)
 
 bucketStack= BucketStack(app, "BucketStack", gatwayEndpoint=networkStack.gatewayEndpoint, env=env, config=config)
 
-LambdaStack(app, "LambdaStack", vpc=networkStack.vpc, bucketName=bucketStack.bucketName, env=env, config=config)
+LambdaStack(app, "LambdaStack", vpc=networkStack.vpc, bucket=bucketStack.bucket, env=env, config=config)
 
 app.synth()
