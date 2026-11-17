@@ -35,13 +35,7 @@ class LambdaStack(Stack):
         )
 
         lambda_security_group.add_egress_rule(
-            ec2.Peer.prefix_list(
-                ec2.PrefixList.from_lookup(
-                    self,
-                    "S3PL",
-                    prefix_list_name=f"com.amazonaws.{config['region']}.s3",
-                ).prefix_list_id
-            ),
+            ec2.Peer.any_ipv4(),
             ec2.Port.tcp(443),
             "Allow HTTPS traffic",
         )
@@ -57,7 +51,7 @@ class LambdaStack(Stack):
             handler="index.handler",
             code=_lambda.Code.from_asset(str(Path(__file__).parent / "lambda_code")),
             vpc=vpc,
-            vpc_subnets=vpc.isolated_subnets,
+            vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_ISOLATED),
             security_groups=[lambda_security_group],
             role=my_role,
             environment={"BUCKET_NAME": bucket.bucket_name},

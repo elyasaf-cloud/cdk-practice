@@ -26,23 +26,18 @@ class BucketStack(Stack):
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             enforce_ssl=True,
             removal_policy=RemovalPolicy.DESTROY,
-            auto_delete_objects=True,
         )
-
-        # define variables
-        bucket_arn = self.bucket.bucket_arn
-        vpc_endpoint_id = gatwayEndpoint.vpc_endpoint_id
-        user_id = f"{config['roleId']}:{config['admin']}"
 
         # Denies reading, writing and deleting objects unless the request comes through our VPC endpoint.
         # All conditions in a statement must be true for it to apply
+        user_id = f"{config['roleId']}:{config['admin']}"
         self.bucket.add_to_resource_policy(
             iam.PolicyStatement(
                 sid="DenyAccessOutsideVPC",
                 effect=iam.Effect.DENY,
                 principals=[iam.AnyPrincipal()],
                 actions=["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
-                resources=[self.bucket, self.bucket.arn_for_objects("*")],
+                resources=[self.bucket.arn_for_objects("*")],
                 conditions={
                     "StringNotEquals": {
                         "aws:SourceVpce": gatwayEndpoint.vpc_endpoint_id
